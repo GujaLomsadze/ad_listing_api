@@ -3,6 +3,6 @@ from fastapi import APIRouter
 router = APIRouter()
 
 
-@router.get("/auth")
+@router.get("/consumers")
 async def tra():
     return {"asd": 123}
