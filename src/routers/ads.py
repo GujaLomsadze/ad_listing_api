@@ -11,7 +11,7 @@ from ..domain.ad import service
 router = APIRouter(
     prefix="/ads",
     tags=["Advertisements"],
-    # dependencies=[Depends(get_token_header)],
+    dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}},
 )
 
