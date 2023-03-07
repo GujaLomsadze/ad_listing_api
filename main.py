@@ -1,18 +1,17 @@
 from fastapi import Depends, FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException
-from src.dependencies import get_query_token, get_token_header
+from src.dependencies import get_token_header
 from src.internal import admin
 from src.routers.api import router as router_api
-from src.database import engine, SessionLocal, Base
 from src.config import API_PREFIX, ALLOWED_HOSTS
 from src.routers.handlers.http_error import http_error_handler
 
 
 def get_application() -> FastAPI:
-    application = FastAPI()
-
-    Base.metadata.create_all(bind=engine)
+    application = FastAPI(
+        swagger_ui_parameters={"defaultModelsExpandDepth": -1}
+    )
 
     application.include_router(router_api, prefix=API_PREFIX)
 
@@ -38,15 +37,3 @@ def get_application() -> FastAPI:
 
 
 app = get_application()
-
-
-@app.middleware("http")
-async def db_session_middleware(request: Request, call_next):
-    response = Response("Internal server error", status_code=500)
-
-    try:
-        request.state.db = SessionLocal()
-        response = await call_next(request)
-    finally:
-        request.state.db.close()
-    return response

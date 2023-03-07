@@ -1,8 +1,6 @@
-from fastapi import Header, HTTPException
-
-from .database import SessionLocal
-
-from jose import jwt
+import jwt
+import psycopg2
+from fastapi import Header
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 
@@ -17,21 +15,19 @@ def decode(token):
 
 
 def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    connection = psycopg2.connect(
+        host="localhost",
+        database="ads",
+        user="postgres",
+        password="adminD4761#guja"
+    )
+    yield connection
+    connection.close()
 
 
 async def get_token_header(x_token: str = Header(...)):
     payload = decode(x_token)
-    username: str = payload.get("email")
 
-    if username is None:
-        raise HTTPException(status_code=403, detail="Unauthorized")
+    return payload
 
-
-async def get_query_token(token: str):
-    if token != "jessica":
-        raise HTTPException(status_code=400, detail="No Valid token provided")
+    # TODO: Validate token from database
