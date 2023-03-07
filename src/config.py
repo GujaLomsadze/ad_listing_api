@@ -12,7 +12,7 @@ JWT_TOKEN_PREFIX = "Authorization"
 
 config = Config(".env")
 
-ROUTE_PREFIX_V1 = "/v1"
+ROUTE_PREFIX_V1 = ""
 
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS",
